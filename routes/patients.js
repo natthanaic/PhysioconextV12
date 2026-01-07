@@ -709,11 +709,19 @@ router.post('/', authenticateToken, [
             patientData.ssn = null;
         }
 
+        // Auto-assign Thai nationality for patients with Thai National ID
+        if (patientData.pid) {
+            patientData.nationality = 'THA'; // Thai patients automatically get Thai nationality
+        } else if (patientData.nationality === '' || patientData.nationality === undefined) {
+            patientData.nationality = null; // International patients without nationality
+        }
+
         console.log('Inserting patient with IDs:', {
             hn: actualPTHN,
             pt_number: ptNumber,
             pid: patientData.pid,
-            passport_no: patientData.passport_no
+            passport_no: patientData.passport_no,
+            nationality: patientData.nationality
         });
 
         const [result] = await db.execute(

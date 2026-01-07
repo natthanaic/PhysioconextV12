@@ -1471,25 +1471,39 @@
                     console.log('[THAI CARD] User started manual input, stopping auto-polling');
                     stopCardPolling();
                 }
+                updateNationalityField(); // Update nationality when Thai ID changes
             });
         }
 
-        // Show/hide nationality field based on passport input
+        // Show/hide nationality field based on passport and Thai ID input
         const passportInput = document.getElementById('passportInput');
         const nationalityField = document.getElementById('nationalityField');
         const nationalitySelect = document.getElementById('nationalitySelect');
 
-        if (passportInput && nationalityField) {
-            passportInput.addEventListener('input', () => {
-                if (passportInput.value.trim().length > 0) {
+        function updateNationalityField() {
+            const hasPassport = passportInput && passportInput.value.trim().length > 0;
+            const hasPid = pidInput && pidInput.value.trim().length > 0;
+
+            if (nationalityField && nationalitySelect) {
+                // Show nationality only for passport holders (NOT for Thai ID holders)
+                if (hasPassport && !hasPid) {
                     nationalityField.style.display = 'block';
                     nationalitySelect.setAttribute('required', 'required');
                 } else {
                     nationalityField.style.display = 'none';
                     nationalitySelect.removeAttribute('required');
-                    nationalitySelect.value = '';
+                    // Auto-set to Thai if Thai ID is present
+                    if (hasPid) {
+                        nationalitySelect.value = 'THA';
+                    } else {
+                        nationalitySelect.value = '';
+                    }
                 }
-            });
+            }
+        }
+
+        if (passportInput && nationalityField) {
+            passportInput.addEventListener('input', updateNationalityField);
         }
 
         // Initialize on load
