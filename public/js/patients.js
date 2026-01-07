@@ -59,6 +59,34 @@ async function loadPatients(page = 1) {
 }
 
 /**
+ * Get country flag emoji from ISO 3166-1 alpha-3 code
+ * @param {string} countryCode - ISO 3-letter country code (e.g., THA, USA, GBR)
+ * @returns {string} Flag emoji
+ */
+function getCountryFlag(countryCode) {
+    if (!countryCode) return '🇹🇭'; // Default Thai flag
+
+    // Map ISO alpha-3 to alpha-2 for flag emoji
+    const codeMap = {
+        'THA': 'TH', 'USA': 'US', 'GBR': 'GB', 'CHN': 'CN', 'JPN': 'JP',
+        'KOR': 'KR', 'SGP': 'SG', 'MYS': 'MY', 'IDN': 'ID', 'VNM': 'VN',
+        'PHL': 'PH', 'IND': 'IN', 'AUS': 'AU', 'NZL': 'NZ', 'CAN': 'CA',
+        'FRA': 'FR', 'DEU': 'DE', 'ITA': 'IT', 'ESP': 'ES', 'RUS': 'RU',
+        'BRA': 'BR', 'MEX': 'MX', 'ARG': 'AR', 'ZAF': 'ZA', 'EGY': 'EG',
+        'SAU': 'SA', 'ARE': 'AE', 'QAT': 'QA', 'KWT': 'KW', 'BHR': 'BH',
+        'NLD': 'NL', 'BEL': 'BE', 'CHE': 'CH', 'AUT': 'AT', 'SWE': 'SE',
+        'NOR': 'NO', 'DNK': 'DK', 'FIN': 'FI', 'POL': 'PL', 'CZE': 'CZ',
+        'HUN': 'HU', 'PRT': 'PT', 'GRC': 'GR', 'TUR': 'TR', 'ISR': 'IL'
+    };
+
+    const alpha2 = codeMap[countryCode.toUpperCase()];
+    if (!alpha2) return '🌐'; // Generic globe for unknown
+
+    // Convert alpha-2 to flag emoji (regional indicator symbols)
+    return String.fromCodePoint(...[...alpha2].map(c => 0x1F1E6 + c.charCodeAt(0) - 65));
+}
+
+/**
  * Display patients in grid
  * @param {Array} patients - Array of patient objects
  */
@@ -74,17 +102,28 @@ function displayPatients(patients) {
         return;
     }
 
-    grid.innerHTML = patients.map(patient => `
+    grid.innerHTML = patients.map(patient => {
+        // Get country flag emoji
+        const flag = patient.nationality ? getCountryFlag(patient.nationality) : '🇹🇭';
+
+        // Format gender badge
+        const genderBadge = patient.gender
+            ? `<span class="badge bg-light text-secondary border me-1" style="font-size: 0.7rem;">${patient.gender === 'M' ? '👨 Male' : patient.gender === 'F' ? '👩 Female' : 'Other'}</span>`
+            : '';
+
+        return `
         <div class="col-md-6 col-lg-4 mb-3">
             <div class="card patient-card h-100" onclick="viewPatient(${patient.id})">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-start mb-2">
-                        <h5 class="card-title mb-0">${escapeHtml(patient.first_name)} ${escapeHtml(patient.last_name)}</h5>
+                        <h5 class="card-title mb-0">${flag} ${escapeHtml(patient.first_name)} ${escapeHtml(patient.last_name)}</h5>
                         <span class="badge bg-primary">${escapeHtml(patient.hn)}</span>
+                    </div>
+                    <div class="mb-2">
+                        ${genderBadge}
                     </div>
                     <p class="card-text">
                         <small class="text-muted">
-                            <i class="bi bi-card-text me-1"></i>PT: ${escapeHtml(patient.pt_number)}<br>
                             <i class="bi bi-calendar me-1"></i>DOB: ${formatDate(patient.dob)}<br>
                             <i class="bi bi-building me-1"></i>${escapeHtml(patient.clinic_name)}<br>
                             <i class="bi bi-file-medical me-1"></i>${truncateText(escapeHtml(patient.diagnosis), 50)}
@@ -101,7 +140,8 @@ function displayPatients(patients) {
                 </div>
             </div>
         </div>
-    `).join('');
+    `;
+    }).join('');
 }
 
 /**

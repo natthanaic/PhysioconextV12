@@ -466,6 +466,32 @@
             }
         }
 
+        /**
+         * Get country flag emoji from ISO 3166-1 alpha-3 code
+         */
+        function getCountryFlag(countryCode) {
+            if (!countryCode) return '🇹🇭'; // Default Thai flag
+
+            // Map ISO alpha-3 to alpha-2 for flag emoji
+            const codeMap = {
+                'THA': 'TH', 'USA': 'US', 'GBR': 'GB', 'CHN': 'CN', 'JPN': 'JP',
+                'KOR': 'KR', 'SGP': 'SG', 'MYS': 'MY', 'IDN': 'ID', 'VNM': 'VN',
+                'PHL': 'PH', 'IND': 'IN', 'AUS': 'AU', 'NZL': 'NZ', 'CAN': 'CA',
+                'FRA': 'FR', 'DEU': 'DE', 'ITA': 'IT', 'ESP': 'ES', 'RUS': 'RU',
+                'BRA': 'BR', 'MEX': 'MX', 'ARG': 'AR', 'ZAF': 'ZA', 'EGY': 'EG',
+                'SAU': 'SA', 'ARE': 'AE', 'QAT': 'QA', 'KWT': 'KW', 'BHR': 'BH',
+                'NLD': 'NL', 'BEL': 'BE', 'CHE': 'CH', 'AUT': 'AT', 'SWE': 'SE',
+                'NOR': 'NO', 'DNK': 'DK', 'FIN': 'FI', 'POL': 'PL', 'CZE': 'CZ',
+                'HUN': 'HU', 'PRT': 'PT', 'GRC': 'GR', 'TUR': 'TR', 'ISR': 'IL'
+            };
+
+            const alpha2 = codeMap[countryCode.toUpperCase()];
+            if (!alpha2) return '🌐'; // Generic globe for unknown
+
+            // Convert alpha-2 to flag emoji (regional indicator symbols)
+            return String.fromCodePoint(...[...alpha2].map(c => 0x1F1E6 + c.charCodeAt(0) - 65));
+        }
+
         function renderListView() {
             const tbody = document.getElementById('patientsTableBody');
             
@@ -483,20 +509,26 @@
             tbody.innerHTML = currentPatientsData.map(p => {
                 // Robust Name Handling
                 let patientName = 'Unknown Patient';
-                
+
                 if (p.name) patientName = p.name;
                 else if (p.fullName) patientName = p.fullName;
                 else if (p.first_name) patientName = `${p.first_name} ${p.last_name || ''}`;
                 else if (p.firstName) patientName = `${p.firstName} ${p.lastName || ''}`;
-                
+
                 patientName = patientName.trim() || 'Unknown Patient';
+
+                // Get country flag
+                const flag = p.nationality ? getCountryFlag(p.nationality) : '🇹🇭';
+
+                // Format gender
+                const genderDisplay = p.gender ? (p.gender === 'M' ? '👨 Male' : p.gender === 'F' ? '👩 Female' : 'Other') : '';
 
                 return `
                 <tr>
                     <td class="ps-4">
-                        <div class="fw-bold text-dark mb-1">${patientName}</div>
+                        <div class="fw-bold text-dark mb-1">${flag} ${patientName}</div>
                         <small class="text-muted d-flex align-items-center gap-2">
-                            ${p.gender ? `<span class="badge bg-light text-secondary border fw-normal" style="font-size: 0.7rem;">${p.gender}</span>` : ''} 
+                            ${genderDisplay ? `<span class="badge bg-light text-secondary border fw-normal" style="font-size: 0.7rem;">${genderDisplay}</span>` : ''}
                             ${calculateAge(p.dob) !== '-' ? `<span style="font-size: 0.75rem;">${calculateAge(p.dob)} yrs</span>` : ''}
                         </small>
                     </td>

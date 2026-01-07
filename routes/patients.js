@@ -718,14 +718,14 @@ router.post('/', authenticateToken, [
 
         const [result] = await db.execute(
             `INSERT INTO patients (
-                hn, pt_number, pid, passport_no, title, first_name, last_name,
+                hn, pt_number, pid, passport_no, nationality, title, first_name, last_name,
                 dob, gender, phone, email, address, emergency_contact, emergency_phone,
                 diagnosis, rehab_goal, rehab_goal_other, body_area, frequency,
                 expected_duration, doctor_note, precaution, contraindication,
                 medical_history, clinic_id, created_by
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
             [
-                actualPTHN, ptNumber, patientData.pid, patientData.passport_no,
+                actualPTHN, ptNumber, patientData.pid, patientData.passport_no, patientData.nationality,
                 patientData.title, patientData.first_name, patientData.last_name,
                 patientData.dob, patientData.gender, patientData.phone, patientData.email,
                 patientData.address, patientData.emergency_contact, patientData.emergency_phone,
@@ -849,7 +849,7 @@ router.put('/:id', authenticateToken, async (req, res) => {
         const updateFields = [];
         const updateValues = [];
         const allowedFields = [
-            'pid', 'passport_no', 'title', 'first_name', 'last_name', 'gender',
+            'pid', 'passport_no', 'nationality', 'title', 'first_name', 'last_name', 'dob', 'gender',
             'phone', 'email', 'address', 'emergency_contact', 'emergency_phone',
             'diagnosis', 'rehab_goal', 'rehab_goal_other', 'body_area', 'frequency',
             'expected_duration', 'doctor_note', 'precaution', 'contraindication', 'medical_history'
@@ -1016,17 +1016,18 @@ router.post('/csv/import', authenticateToken, uploadCSV.single('file'), async (r
                 // Insert patient
                 await db.execute(
                     `INSERT INTO patients (
-                        hn, pt_number, pid, passport_no, title, first_name, last_name,
+                        hn, pt_number, pid, passport_no, nationality, title, first_name, last_name,
                         dob, gender, phone, email, address, emergency_contact, emergency_phone,
                         diagnosis, rehab_goal, rehab_goal_other, body_area, frequency,
                         expected_duration, doctor_note, precaution, contraindication,
                         medical_history, clinic_id, created_by
-                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
                     [
                         row.hn || null,
                         ptNumber,
                         row.pid || null,
                         row.passport_no || null,
+                        row.nationality || null,
                         row.title || null,
                         row.first_name,
                         row.last_name,
