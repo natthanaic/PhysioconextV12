@@ -106,9 +106,9 @@ function displayPatients(patients) {
         // Get country flag emoji
         const flag = patient.nationality ? getCountryFlag(patient.nationality) : '🇹🇭';
 
-        // Format gender badge
+        // Format gender badge (no icons, just text)
         const genderBadge = patient.gender
-            ? `<span class="badge bg-light text-secondary border me-1" style="font-size: 0.7rem;">${patient.gender === 'M' ? '👨 Male' : patient.gender === 'F' ? '👩 Female' : 'Other'}</span>`
+            ? `<span class="badge bg-light text-secondary border me-1" style="font-size: 0.7rem;">${patient.gender === 'M' ? 'Male' : patient.gender === 'F' ? 'Female' : 'Other'}</span>`
             : '';
 
         return `

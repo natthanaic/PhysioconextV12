@@ -520,8 +520,8 @@
                 // Get country flag
                 const flag = p.nationality ? getCountryFlag(p.nationality) : '🇹🇭';
 
-                // Format gender
-                const genderDisplay = p.gender ? (p.gender === 'M' ? '👨 Male' : p.gender === 'F' ? '👩 Female' : 'Other') : '';
+                // Format gender (no icons, just text)
+                const genderDisplay = p.gender ? (p.gender === 'M' ? 'Male' : p.gender === 'F' ? 'Female' : 'Other') : '';
 
                 return `
                 <tr>

@@ -855,8 +855,8 @@
                                 <label for="edit-gender" class="form-label">Gender <span class="text-danger">*</span></label>
                                 <select class="form-select" id="edit-gender" required>
                                     <option value="">Select Gender</option>
-                                    <option value="M">👨 Male</option>
-                                    <option value="F">👩 Female</option>
+                                    <option value="M">Male</option>
+                                    <option value="F">Female</option>
                                     <option value="O">Other</option>
                                 </select>
                             </div>
@@ -1140,15 +1140,15 @@
             document.getElementById('fullName').textContent = `${patientData.first_name} ${patientData.last_name}`;
             document.getElementById('dob').textContent = formatDate(patientData.dob);
 
-            // Display gender with icon
-            const genderDisplay = patientData.gender === 'M' ? '👨 Male' :
-                                  patientData.gender === 'F' ? '👩 Female' :
+            // Display gender (no icons, just text)
+            const genderDisplay = patientData.gender === 'M' ? 'Male' :
+                                  patientData.gender === 'F' ? 'Female' :
                                   patientData.gender === 'O' ? 'Other' : '-';
             document.getElementById('gender').textContent = genderDisplay;
 
-            // Display nationality with flag
+            // Display nationality with flag only (no country name text)
             const nationalityDisplay = patientData.nationality ?
-                `${getCountryFlag(patientData.nationality)} ${getCountryName(patientData.nationality)}` : '-';
+                getCountryFlag(patientData.nationality) : '🇹🇭';
             document.getElementById('nationality').textContent = nationalityDisplay;
 
             document.getElementById('phone').textContent = patientData.phone || '-';
