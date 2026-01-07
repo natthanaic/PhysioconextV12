@@ -332,7 +332,61 @@
                                 <span class="text-micro">For international patients</span>
                                 <div class="invalid-feedback" id="passportErrorText"></div>
                             </div>
-                            
+
+                            <!-- Nationality Dropdown (shown when passport is entered) -->
+                            <div class="col-md-6" id="nationalityField" style="display: none;">
+                                <label for="nationalitySelect" class="form-label">Nationality</label>
+                                <select class="form-select form-control-lg" id="nationalitySelect" name="nationality">
+                                    <option value="">Select Country</option>
+                                    <option value="THA">🇹🇭 Thailand</option>
+                                    <option value="USA">🇺🇸 United States</option>
+                                    <option value="GBR">🇬🇧 United Kingdom</option>
+                                    <option value="CHN">🇨🇳 China</option>
+                                    <option value="JPN">🇯🇵 Japan</option>
+                                    <option value="KOR">🇰🇷 South Korea</option>
+                                    <option value="SGP">🇸🇬 Singapore</option>
+                                    <option value="MYS">🇲🇾 Malaysia</option>
+                                    <option value="IDN">🇮🇩 Indonesia</option>
+                                    <option value="VNM">🇻🇳 Vietnam</option>
+                                    <option value="PHL">🇵🇭 Philippines</option>
+                                    <option value="IND">🇮🇳 India</option>
+                                    <option value="AUS">🇦🇺 Australia</option>
+                                    <option value="NZL">🇳🇿 New Zealand</option>
+                                    <option value="CAN">🇨🇦 Canada</option>
+                                    <option value="FRA">🇫🇷 France</option>
+                                    <option value="DEU">🇩🇪 Germany</option>
+                                    <option value="ITA">🇮🇹 Italy</option>
+                                    <option value="ESP">🇪🇸 Spain</option>
+                                    <option value="RUS">🇷🇺 Russia</option>
+                                    <option value="BRA">🇧🇷 Brazil</option>
+                                    <option value="MEX">🇲🇽 Mexico</option>
+                                    <option value="ARG">🇦🇷 Argentina</option>
+                                    <option value="ZAF">🇿🇦 South Africa</option>
+                                    <option value="EGY">🇪🇬 Egypt</option>
+                                    <option value="SAU">🇸🇦 Saudi Arabia</option>
+                                    <option value="ARE">🇦🇪 United Arab Emirates</option>
+                                    <option value="QAT">🇶🇦 Qatar</option>
+                                    <option value="KWT">🇰🇼 Kuwait</option>
+                                    <option value="BHR">🇧🇭 Bahrain</option>
+                                    <option value="NLD">🇳🇱 Netherlands</option>
+                                    <option value="BEL">🇧🇪 Belgium</option>
+                                    <option value="CHE">🇨🇭 Switzerland</option>
+                                    <option value="AUT">🇦🇹 Austria</option>
+                                    <option value="SWE">🇸🇪 Sweden</option>
+                                    <option value="NOR">🇳🇴 Norway</option>
+                                    <option value="DNK">🇩🇰 Denmark</option>
+                                    <option value="FIN">🇫🇮 Finland</option>
+                                    <option value="POL">🇵🇱 Poland</option>
+                                    <option value="CZE">🇨🇿 Czech Republic</option>
+                                    <option value="HUN">🇭🇺 Hungary</option>
+                                    <option value="PRT">🇵🇹 Portugal</option>
+                                    <option value="GRC">🇬🇷 Greece</option>
+                                    <option value="TUR">🇹🇷 Turkey</option>
+                                    <option value="ISR">🇮🇱 Israel</option>
+                                </select>
+                                <span class="text-micro">Required for international patients</span>
+                            </div>
+
                             <div class="col-12 mt-2">
                                 <button class="btn btn-primary w-100 py-2 shadow-sm" type="button" id="btnCheckID">
                                     <i class="bi bi-search me-2"></i> Check Database & Generate HN
@@ -1416,6 +1470,24 @@
                 if (pidInput.value.length > 0 && pollingActive) {
                     console.log('[THAI CARD] User started manual input, stopping auto-polling');
                     stopCardPolling();
+                }
+            });
+        }
+
+        // Show/hide nationality field based on passport input
+        const passportInput = document.getElementById('passportInput');
+        const nationalityField = document.getElementById('nationalityField');
+        const nationalitySelect = document.getElementById('nationalitySelect');
+
+        if (passportInput && nationalityField) {
+            passportInput.addEventListener('input', () => {
+                if (passportInput.value.trim().length > 0) {
+                    nationalityField.style.display = 'block';
+                    nationalitySelect.setAttribute('required', 'required');
+                } else {
+                    nationalityField.style.display = 'none';
+                    nationalitySelect.removeAttribute('required');
+                    nationalitySelect.value = '';
                 }
             });
         }
