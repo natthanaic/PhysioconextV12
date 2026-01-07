@@ -56,23 +56,23 @@ async function previewNextPTHN(db) {
     const currentYear = parseInt(moment().format('YY'));
 
     try {
-        // Just read the current sequence (no lock, no increment)
+        // Just read the current global sequence (no lock, no increment)
+        // Using year = 0 as the global sequence identifier
         const [rows] = await db.query(
-            'SELECT last_sequence FROM pthn_sequence WHERE year = ?',
-            [currentYear]
+            'SELECT last_sequence FROM pthn_sequence WHERE year = 0'
         );
 
         let nextSequence;
 
         if (rows.length === 0) {
-            // First PTHN of the year would be 1
+            // First PTHN ever would be 1
             nextSequence = 1;
         } else {
             // Next sequence would be current + 1
             nextSequence = rows[0].last_sequence + 1;
         }
 
-        // Format PTHN
+        // Format PTHN with current year but continuous sequence
         const pthn = `PT${currentYear.toString().padStart(2, '0')}${nextSequence.toString().padStart(4, '0')}`;
         return pthn;
 
@@ -82,6 +82,7 @@ async function previewNextPTHN(db) {
 }
 
 // Generate next PTHN with format PTYYXXXX (ACTUALLY INCREMENTS - only call when saving patient!)
+// Uses continuous global sequence (never resets on new year)
 async function generateNextPTHN(db) {
     const currentYear = parseInt(moment().format('YY'));
     let connection;
@@ -93,39 +94,38 @@ async function generateNextPTHN(db) {
         // Start transaction
         await connection.beginTransaction();
 
-        // Get current sequence with lock
+        // Get current global sequence with lock (year = 0 for global sequence)
         const [rows] = await connection.query(
-            'SELECT last_sequence FROM pthn_sequence WHERE year = ? FOR UPDATE',
-            [currentYear]
+            'SELECT last_sequence FROM pthn_sequence WHERE year = 0 FOR UPDATE'
         );
 
         let nextSequence;
 
         if (rows.length === 0) {
-            // First PTHN of the year
+            // First PTHN ever - initialize global sequence
             nextSequence = 1;
             await connection.query(
-                'INSERT INTO pthn_sequence (year, last_sequence) VALUES (?, ?)',
-                [currentYear, nextSequence]
+                'INSERT INTO pthn_sequence (year, last_sequence) VALUES (0, ?)',
+                [nextSequence]
             );
         } else {
-            // Increment sequence
+            // Increment global sequence (continues forever)
             nextSequence = rows[0].last_sequence + 1;
 
             if (nextSequence > 9999) {
-                throw new Error('PTHN sequence limit reached for this year (max 9999)');
+                throw new Error('PTHN sequence limit reached (max 9999). Please contact system administrator.');
             }
 
             await connection.query(
-                'UPDATE pthn_sequence SET last_sequence = ? WHERE year = ?',
-                [nextSequence, currentYear]
+                'UPDATE pthn_sequence SET last_sequence = ? WHERE year = 0',
+                [nextSequence]
             );
         }
 
         // Commit transaction
         await connection.commit();
 
-        // Format PTHN
+        // Format PTHN with current year but continuous sequence
         const pthn = `PT${currentYear.toString().padStart(2, '0')}${nextSequence.toString().padStart(4, '0')}`;
         return pthn;
 
