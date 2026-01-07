@@ -567,8 +567,12 @@ router.get('/my-bills', async (req, res) => {
 
         // Get bills
         const [bills] = await db.execute(
-            `SELECT id, bill_number, bill_date, total_amount, paid_amount,
-            status, payment_method, payment_date, created_at
+            `SELECT id, bill_number,
+            DATE_FORMAT(bill_date, '%Y-%m-%d') as bill_date,
+            total_amount, paid_amount,
+            status, payment_method,
+            DATE_FORMAT(payment_date, '%Y-%m-%d') as payment_date,
+            created_at
             FROM bills
             WHERE patient_id = ?
             ORDER BY bill_date DESC, created_at DESC`,

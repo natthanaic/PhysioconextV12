@@ -3121,7 +3121,13 @@ router.get('/bills', authenticateToken, async (req, res) => {
 
         let query = `
             SELECT
-                b.*,
+                b.id, b.bill_code, b.patient_id, b.walk_in_name, b.walk_in_phone,
+                b.clinic_id, DATE_FORMAT(b.bill_date, '%Y-%m-%d') as bill_date,
+                b.subtotal, b.discount, b.tax, b.total_amount,
+                b.payment_method, b.payment_status,
+                DATE_FORMAT(b.payment_date, '%Y-%m-%d') as payment_date,
+                b.payment_notes, b.bill_notes, b.appointment_id, b.pn_case_id,
+                b.course_id, b.is_course_cutting, b.created_by, b.created_at, b.updated_at,
                 CONCAT(COALESCE(p.first_name, ''), ' ', COALESCE(p.last_name, '')) as patient_name,
                 p.phone as patient_phone,
                 p.email as patient_email,
@@ -3195,7 +3201,13 @@ router.get('/bills/:id', authenticateToken, async (req, res) => {
 
         const [bills] = await db.execute(`
             SELECT
-                b.*,
+                b.id, b.bill_code, b.patient_id, b.walk_in_name, b.walk_in_phone,
+                b.clinic_id, DATE_FORMAT(b.bill_date, '%Y-%m-%d') as bill_date,
+                b.subtotal, b.discount, b.tax, b.total_amount,
+                b.payment_method, b.payment_status,
+                DATE_FORMAT(b.payment_date, '%Y-%m-%d') as payment_date,
+                b.payment_notes, b.bill_notes, b.appointment_id, b.pn_case_id,
+                b.course_id, b.is_course_cutting, b.created_by, b.created_at, b.updated_at,
                 CONCAT(COALESCE(p.first_name, ''), ' ', COALESCE(p.last_name, '')) as patient_name,
                 p.phone as patient_phone,
                 p.email as patient_email,
@@ -4004,7 +4016,7 @@ router.get('/statistics/bills/detailed', authenticateToken, async (req, res) => 
             SELECT
                 b.id,
                 b.bill_code,
-                b.bill_date,
+                DATE_FORMAT(b.bill_date, '%Y-%m-%d') as bill_date,
                 b.total_amount,
                 b.payment_status,
                 CONCAT(COALESCE(p.first_name, ''), ' ', COALESCE(p.last_name, '')) as patient_name,
