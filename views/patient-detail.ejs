@@ -410,10 +410,14 @@
                                 <div class="detail-label">Date of Birth</div>
                                 <div class="detail-value" id="dob">-</div>
                             </div>
-                            
+
                             <div class="col-md-3">
                                 <div class="detail-label">Gender</div>
                                 <div class="detail-value" id="gender">-</div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="detail-label">Nationality</div>
+                                <div class="detail-value" id="nationality">-</div>
                             </div>
                             <div class="col-md-3">
                                 <div class="detail-label">Phone</div>
@@ -851,15 +855,66 @@
                                 <label for="edit-gender" class="form-label">Gender <span class="text-danger">*</span></label>
                                 <select class="form-select" id="edit-gender" required>
                                     <option value="">Select Gender</option>
-                                    <option value="Male">Male</option>
-                                    <option value="Female">Female</option>
-                                    <option value="Other">Other</option>
+                                    <option value="M">👨 Male</option>
+                                    <option value="F">👩 Female</option>
+                                    <option value="O">Other</option>
                                 </select>
                             </div>
                             <div class="col-md-4">
                                 <label for="edit-clinic" class="form-label">Registered Clinic <span class="text-danger">*</span></label>
                                 <select class="form-select" id="edit-clinic" required>
                                     <option value="">Select Clinic</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="edit-nationality" class="form-label">Nationality</label>
+                                <select class="form-select" id="edit-nationality">
+                                    <option value="">Select Country</option>
+                                    <option value="THA">🇹🇭 Thailand</option>
+                                    <option value="USA">🇺🇸 United States</option>
+                                    <option value="GBR">🇬🇧 United Kingdom</option>
+                                    <option value="CHN">🇨🇳 China</option>
+                                    <option value="JPN">🇯🇵 Japan</option>
+                                    <option value="KOR">🇰🇷 South Korea</option>
+                                    <option value="SGP">🇸🇬 Singapore</option>
+                                    <option value="MYS">🇲🇾 Malaysia</option>
+                                    <option value="IDN">🇮🇩 Indonesia</option>
+                                    <option value="VNM">🇻🇳 Vietnam</option>
+                                    <option value="PHL">🇵🇭 Philippines</option>
+                                    <option value="IND">🇮🇳 India</option>
+                                    <option value="AUS">🇦🇺 Australia</option>
+                                    <option value="NZL">🇳🇿 New Zealand</option>
+                                    <option value="CAN">🇨🇦 Canada</option>
+                                    <option value="FRA">🇫🇷 France</option>
+                                    <option value="DEU">🇩🇪 Germany</option>
+                                    <option value="ITA">🇮🇹 Italy</option>
+                                    <option value="ESP">🇪🇸 Spain</option>
+                                    <option value="RUS">🇷🇺 Russia</option>
+                                    <option value="BRA">🇧🇷 Brazil</option>
+                                    <option value="MEX">🇲🇽 Mexico</option>
+                                    <option value="ARG">🇦🇷 Argentina</option>
+                                    <option value="ZAF">🇿🇦 South Africa</option>
+                                    <option value="EGY">🇪🇬 Egypt</option>
+                                    <option value="SAU">🇸🇦 Saudi Arabia</option>
+                                    <option value="ARE">🇦🇪 United Arab Emirates</option>
+                                    <option value="QAT">🇶🇦 Qatar</option>
+                                    <option value="KWT">🇰🇼 Kuwait</option>
+                                    <option value="BHR">🇧🇭 Bahrain</option>
+                                    <option value="NLD">🇳🇱 Netherlands</option>
+                                    <option value="BEL">🇧🇪 Belgium</option>
+                                    <option value="CHE">🇨🇭 Switzerland</option>
+                                    <option value="AUT">🇦🇹 Austria</option>
+                                    <option value="SWE">🇸🇪 Sweden</option>
+                                    <option value="NOR">🇳🇴 Norway</option>
+                                    <option value="DNK">🇩🇰 Denmark</option>
+                                    <option value="FIN">🇫🇮 Finland</option>
+                                    <option value="POL">🇵🇱 Poland</option>
+                                    <option value="CZE">🇨🇿 Czech Republic</option>
+                                    <option value="HUN">🇭🇺 Hungary</option>
+                                    <option value="PRT">🇵🇹 Portugal</option>
+                                    <option value="GRC">🇬🇷 Greece</option>
+                                    <option value="TUR">🇹🇷 Turkey</option>
+                                    <option value="ISR">🇮🇱 Israel</option>
                                 </select>
                             </div>
                             <div class="col-md-6">
@@ -1084,7 +1139,18 @@
             document.getElementById('ptNumber').textContent = patientData.pt_number || '-';
             document.getElementById('fullName').textContent = `${patientData.first_name} ${patientData.last_name}`;
             document.getElementById('dob').textContent = formatDate(patientData.dob);
-            document.getElementById('gender').textContent = patientData.gender || '-';
+
+            // Display gender with icon
+            const genderDisplay = patientData.gender === 'M' ? '👨 Male' :
+                                  patientData.gender === 'F' ? '👩 Female' :
+                                  patientData.gender === 'O' ? 'Other' : '-';
+            document.getElementById('gender').textContent = genderDisplay;
+
+            // Display nationality with flag
+            const nationalityDisplay = patientData.nationality ?
+                `${getCountryFlag(patientData.nationality)} ${getCountryName(patientData.nationality)}` : '-';
+            document.getElementById('nationality').textContent = nationalityDisplay;
+
             document.getElementById('phone').textContent = patientData.phone || '-';
             document.getElementById('email').textContent = patientData.email || '-';
             document.getElementById('clinic').textContent = patientData.clinic_name || '-';
@@ -1093,7 +1159,7 @@
             document.getElementById('bodyArea').textContent = patientData.body_area || '-';
             document.getElementById('precautions').textContent = patientData.precaution || '-';
             document.getElementById('contraindications').textContent = patientData.contraindication || '-';
-            
+
             // Pre-fill PN form with patient diagnosis
             document.getElementById('pnDiagnosis').value = patientData.diagnosis || '';
         }
@@ -1303,6 +1369,12 @@
                 clinicSelect.value = patientData.clinic_id;
             }
 
+            // Set nationality dropdown
+            const nationalitySelect = document.getElementById('edit-nationality');
+            if (patientData.nationality) {
+                nationalitySelect.value = patientData.nationality;
+            }
+
             // Hide any previous alerts
             hideEditPatientAlert();
 
@@ -1325,6 +1397,7 @@
                 last_name: document.getElementById('edit-last-name').value,
                 dob: document.getElementById('edit-dob').value,
                 gender: document.getElementById('edit-gender').value,
+                nationality: document.getElementById('edit-nationality').value || null,
                 phone: document.getElementById('edit-phone').value || null,
                 email: document.getElementById('edit-email').value || null,
                 clinic_id: parseInt(document.getElementById('edit-clinic').value),
@@ -1405,6 +1478,50 @@
             if (!text) return '';
             if (text.length <= maxLength) return text;
             return text.substring(0, maxLength) + '...';
+        }
+
+        // Get country flag emoji from ISO 3166-1 alpha-3 code
+        function getCountryFlag(countryCode) {
+            if (!countryCode) return '🇹🇭';
+
+            const codeMap = {
+                'THA': 'TH', 'USA': 'US', 'GBR': 'GB', 'CHN': 'CN', 'JPN': 'JP',
+                'KOR': 'KR', 'SGP': 'SG', 'MYS': 'MY', 'IDN': 'ID', 'VNM': 'VN',
+                'PHL': 'PH', 'IND': 'IN', 'AUS': 'AU', 'NZL': 'NZ', 'CAN': 'CA',
+                'FRA': 'FR', 'DEU': 'DE', 'ITA': 'IT', 'ESP': 'ES', 'RUS': 'RU',
+                'BRA': 'BR', 'MEX': 'MX', 'ARG': 'AR', 'ZAF': 'ZA', 'EGY': 'EG',
+                'SAU': 'SA', 'ARE': 'AE', 'QAT': 'QA', 'KWT': 'KW', 'BHR': 'BH',
+                'NLD': 'NL', 'BEL': 'BE', 'CHE': 'CH', 'AUT': 'AT', 'SWE': 'SE',
+                'NOR': 'NO', 'DNK': 'DK', 'FIN': 'FI', 'POL': 'PL', 'CZE': 'CZ',
+                'HUN': 'HU', 'PRT': 'PT', 'GRC': 'GR', 'TUR': 'TR', 'ISR': 'IL'
+            };
+
+            const alpha2 = codeMap[countryCode.toUpperCase()];
+            if (!alpha2) return '🌐';
+
+            return String.fromCodePoint(...[...alpha2].map(c => 0x1F1E6 + c.charCodeAt(0) - 65));
+        }
+
+        // Get country name from ISO 3166-1 alpha-3 code
+        function getCountryName(countryCode) {
+            const countryNames = {
+                'THA': 'Thailand', 'USA': 'United States', 'GBR': 'United Kingdom',
+                'CHN': 'China', 'JPN': 'Japan', 'KOR': 'South Korea',
+                'SGP': 'Singapore', 'MYS': 'Malaysia', 'IDN': 'Indonesia',
+                'VNM': 'Vietnam', 'PHL': 'Philippines', 'IND': 'India',
+                'AUS': 'Australia', 'NZL': 'New Zealand', 'CAN': 'Canada',
+                'FRA': 'France', 'DEU': 'Germany', 'ITA': 'Italy',
+                'ESP': 'Spain', 'RUS': 'Russia', 'BRA': 'Brazil',
+                'MEX': 'Mexico', 'ARG': 'Argentina', 'ZAF': 'South Africa',
+                'EGY': 'Egypt', 'SAU': 'Saudi Arabia', 'ARE': 'United Arab Emirates',
+                'QAT': 'Qatar', 'KWT': 'Kuwait', 'BHR': 'Bahrain',
+                'NLD': 'Netherlands', 'BEL': 'Belgium', 'CHE': 'Switzerland',
+                'AUT': 'Austria', 'SWE': 'Sweden', 'NOR': 'Norway',
+                'DNK': 'Denmark', 'FIN': 'Finland', 'POL': 'Poland',
+                'CZE': 'Czech Republic', 'HUN': 'Hungary', 'PRT': 'Portugal',
+                'GRC': 'Greece', 'TUR': 'Turkey', 'ISR': 'Israel'
+            };
+            return countryNames[countryCode] || countryCode;
         }
 
         // ========================================
