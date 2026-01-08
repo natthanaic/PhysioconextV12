@@ -394,19 +394,15 @@
                     </div>
                     <div class="card-body pt-0">
                         <div class="row g-4">
-                            <div class="col-md-3">
+                            <div class="col-md-4">
                                 <div class="detail-label">HN</div>
                                 <div class="detail-value fw-bold" id="hn">-</div>
                             </div>
-                            <div class="col-md-3">
-                                <div class="detail-label">PT Number</div>
-                                <div class="detail-value fw-bold text-primary" id="ptNumber">-</div>
-                            </div>
-                            <div class="col-md-3">
+                            <div class="col-md-4">
                                 <div class="detail-label">Full Name</div>
                                 <div class="detail-value" id="fullName">-</div>
                             </div>
-                            <div class="col-md-3">
+                            <div class="col-md-4">
                                 <div class="detail-label">Date of Birth</div>
                                 <div class="detail-value" id="dob">-</div>
                             </div>
@@ -831,13 +827,9 @@
                             <i class="bi bi-person me-2"></i>Personal Information
                         </h6>
                         <div class="row g-3 mb-4">
-                            <div class="col-md-6">
+                            <div class="col-md-12">
                                 <label for="edit-hn" class="form-label">HN <span class="text-muted fw-normal">(Read-only)</span></label>
                                 <input type="text" class="form-control bg-light" id="edit-hn" readonly>
-                            </div>
-                            <div class="col-md-6">
-                                <label for="edit-pt-number" class="form-label">PT Number <span class="text-muted fw-normal">(Read-only)</span></label>
-                                <input type="text" class="form-control bg-light" id="edit-pt-number" readonly>
                             </div>
                             <div class="col-md-6">
                                 <label for="edit-first-name" class="form-label">First Name <span class="text-danger">*</span></label>
@@ -1136,7 +1128,6 @@
 
         function displayPatientInfo() {
             document.getElementById('hn').textContent = patientData.hn || '-';
-            document.getElementById('ptNumber').textContent = patientData.pt_number || '-';
             document.getElementById('fullName').textContent = `${patientData.first_name} ${patientData.last_name}`;
             document.getElementById('dob').textContent = formatDate(patientData.dob);
 
@@ -1350,7 +1341,6 @@
 
             // Populate modal with current patient data
             document.getElementById('edit-hn').value = patientData.hn || '';
-            document.getElementById('edit-pt-number').value = patientData.pt_number || '';
             document.getElementById('edit-first-name').value = patientData.first_name || '';
             document.getElementById('edit-last-name').value = patientData.last_name || '';
             document.getElementById('edit-dob').value = patientData.dob ? patientData.dob.split('T')[0] : '';
